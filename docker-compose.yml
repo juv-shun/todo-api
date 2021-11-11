@@ -9,6 +9,10 @@ services:
     volumes:
       - "./src:/app/app"
     environment:
+      DB_HOST: db
+      DB_USER: admin
+      DB_PASSWORD: admin
+      DB_NAME: todo
       LOG_LEVEL: info
       APP_LOG_LEVEL: DEBUG
     command: "/start-reload.sh"
