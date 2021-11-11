@@ -10,4 +10,23 @@ services:
       - "./src:/app/app"
     environment:
       LOG_LEVEL: info
+      APP_LOG_LEVEL: DEBUG
     command: "/start-reload.sh"
+    networks:
+      - todo
+
+  db:
+    image: postgres:latest
+    container_name: todo_app_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: todo
+      TZ: Asia/Tokyo
+    networks:
+      - todo
+
+networks:
+  todo:
