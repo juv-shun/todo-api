@@ -16,3 +16,7 @@ data "terraform_remote_state" "network" {
 variable "service_name" {
   default = "todo-app"
 }
+
+variable "task_definition_image_tag" {
+  default = "master"
+}
