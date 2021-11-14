@@ -1,0 +1,11 @@
+\c todo;
+
+CREATE TABLE IF NOT EXISTS tasks (
+    id       SERIAL NOT NULL,
+    created  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    username VARCHAR(100) NOT NULL,
+    title    VARCHAR(100) NOT NULL,
+    content  VARCHAR(1000),
+    PRIMARY  KEY (id)
+);
