@@ -52,7 +52,7 @@ async def create(
 
 
 @router.put(
-    "/task/{task_id}",
+    "/task/{id}",
     tags=["task"],
     responses={
         200: {"content": None},
@@ -61,12 +61,12 @@ async def create(
     },
 )
 async def update(
-    task_id: int = Path(...),
+    id: int = Path(...),
     task_form: TodoTaskIn = Body(...),
     db=Depends(get_db_connection),
 ):
     user = "shun"
-    task = await ToDoTaskModel.get(db, task_id, user)
+    task = await ToDoTaskModel.get(db, id, user)
     if not task:
         raise HTTPException(status_code=404)
     task.title = task_form.title
@@ -76,7 +76,7 @@ async def update(
 
 
 @router.delete(
-    "/task/{task_id}",
+    "/task/{id}",
     tags=["task"],
     response_description="Successfully Deleted",
     responses={
@@ -86,11 +86,11 @@ async def update(
     }
 )
 async def delete(
-    task_id: int = Path(...),
+    id: int = Path(...),
     db=Depends(get_db_connection),
 ):
     user = "shun"
-    task = await ToDoTaskModel.get(db, task_id, user)
+    task = await ToDoTaskModel.get(db, id, user)
     if not task:
         raise HTTPException(status_code=404)
     await task.delete(db)
@@ -137,17 +137,17 @@ async def search(
 
 
 @router.get(
-    "/task/{task_id}",
+    "/task/{id}",
     tags=["task"],
     response_model=TodoTaskOut,
     responses={404: {"description": "Not found"}},
 )
 async def get(
-    task_id: int = Path(...),
+    id: int = Path(...),
     db=Depends(get_db_connection),
 ):
     user = "shun"
-    task = await ToDoTaskModel.get(db, task_id, user)
+    task = await ToDoTaskModel.get(db, id, user)
     if not task:
         raise HTTPException(status_code=404)
-    return TodoTaskOut(id=task_id, title=task.id, conent=task.content)
+    return TodoTaskOut(id=id, title=task.id, conent=task.content)

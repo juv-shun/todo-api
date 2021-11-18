@@ -147,7 +147,7 @@ class TestCreateTask():
 
 @pytest.mark.usefixtures("init_db")
 class TestUpdateTask():
-    patterns_200 = {name: dict(params, **{"task_id": 1}) for name, params in TestCreateTask.patterns_201.items()}
+    patterns_200 = {name: dict(params, **{"id": 1}) for name, params in TestCreateTask.patterns_201.items()}
 
     @pytest.mark.parametrize("req", list(patterns_200.values()), ids=list(patterns_200.keys()))
     def test_update_200(
@@ -155,11 +155,11 @@ class TestUpdateTask():
         client: TestClient,
         req: Dict[str, Any],
     ):
-        actual = client.put(url=f"/task/{req['task_id']}", headers=req["headers"], json=req["data"])
+        actual = client.put(url=f"/task/{req['id']}", headers=req["headers"], json=req["data"])
         assert actual.status_code == 200
         assert actual.json() is None
 
-    patterns_422 = {name: (dict(params[0], **{"task_id": 1}), params[1])
+    patterns_422 = {name: (dict(params[0], **{"id": 1}), params[1])
                     for name, params in TestCreateTask.patterns_422.items()}
 
     @pytest.mark.parametrize("req, expected_body", list(patterns_422.values()), ids=list(patterns_422.keys()))
@@ -169,18 +169,18 @@ class TestUpdateTask():
         req: Dict[str, Any],
         expected_body: Dict[str, Any],
     ):
-        actual = client.put(url=f"/task/{req['task_id']}", headers=req["headers"], json=req["data"])
+        actual = client.put(url=f"/task/{req['id']}", headers=req["headers"], json=req["data"])
         assert actual.status_code == 422
         assert actual.json() == expected_body
 
     patterns_404 = {
-        "non-exist task_id": {
-            "task_id": 9999,
+        "non-exist id": {
+            "id": 9999,
             "headers": {"content-type": "application/json"},
             "data": {"title": "a"*100, "content": "a"*1000},
         },
         "exist id, but not users' id": {
-            "task_id": 4,
+            "id": 4,
             "headers": {"content-type": "application/json"},
             "data": {"title": "a"*100, "content": "a"*1000},
         },
@@ -192,7 +192,7 @@ class TestUpdateTask():
         client: TestClient,
         req: Dict[str, Any],
     ):
-        actual = client.put(url=f"/task/{req['task_id']}", headers=req["headers"], json=req["data"])
+        actual = client.put(url=f"/task/{req['id']}", headers=req["headers"], json=req["data"])
         assert actual.status_code == 404
         assert actual.json() == {"detail": "Not Found"}
 
@@ -200,7 +200,7 @@ class TestUpdateTask():
 @pytest.mark.usefixtures("init_db")
 class TestDeleteTask():
     patterns_200 = {
-        "exist task_id": {"task_id": 1, "headers": {"content-type": "application/json"}}
+        "exist id": {"id": 1, "headers": {"content-type": "application/json"}}
     }
 
     @pytest.mark.parametrize("req", list(patterns_200.values()), ids=list(patterns_200.keys()))
@@ -209,7 +209,7 @@ class TestDeleteTask():
         client: TestClient,
         req: Dict[str, Any],
     ):
-        actual = client.delete(url=f"/task/{req['task_id']}", headers=req["headers"])
+        actual = client.delete(url=f"/task/{req['id']}", headers=req["headers"])
         assert actual.status_code == 200
         assert actual.json() is None
 
@@ -221,7 +221,7 @@ class TestDeleteTask():
         client: TestClient,
         req: Dict[str, Any],
     ):
-        actual = client.delete(url=f"/task/{req['task_id']}", headers=req["headers"])
+        actual = client.delete(url=f"/task/{req['id']}", headers=req["headers"])
         assert actual.status_code == 404
         assert actual.json() == {"detail": "Not Found"}
 
@@ -391,8 +391,8 @@ class TestSearchTask():
 @pytest.mark.usefixtures("init_db")
 class TestGetTask():
     patterns_200 = {
-        "exist task_id": (
-            {"task_id": 1, "headers": {"content-type": "application/json"}},
+        "exist id": (
+            {"id": 1, "headers": {"content-type": "application/json"}},
             {'id': 1, 'title': '1', 'content': None},
         )
     }
@@ -404,7 +404,7 @@ class TestGetTask():
         req: Dict[str, Any],
         response_body: Dict[str, Any],
     ):
-        actual = client.get(url=f"/task/{req['task_id']}", headers=req["headers"])
+        actual = client.get(url=f"/task/{req['id']}", headers=req["headers"])
         assert actual.status_code == 200
         assert actual.json() == response_body
 
@@ -416,6 +416,6 @@ class TestGetTask():
         client: TestClient,
         req: Dict[str, Any],
     ):
-        actual = client.get(url=f"/task/{req['task_id']}", headers=req["headers"])
+        actual = client.get(url=f"/task/{req['id']}", headers=req["headers"])
         assert actual.status_code == 404
         assert actual.json() == {"detail": "Not Found"}
