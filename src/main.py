@@ -17,7 +17,7 @@ handler = logging.StreamHandler()
 logger.addHandler(handler)
 logger.setLevel(APP_LOG_LEVEL)
 
-app = FastAPI()
+app = FastAPI(title="ToDo Application Sample", version="0.1.0")
 app.include_router(router)
 
 

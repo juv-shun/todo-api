@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query
 
 from starlette.requests import Request
@@ -15,7 +16,24 @@ async def get_db_connection():
         yield conn
 
 
-@router.post("/task", status_code=201)
+@router.post(
+    "/task",
+    status_code=201,
+    tags=["task"],
+    responses={
+        201: {
+            "headers": {
+                "location": {
+                    "schema": {"type": "string"},
+                    "description": "作成したタスクの参照先URL",
+                    "example": "https://example.com/task/1",
+                },
+            },
+            "content": None,
+        },
+        401: {"description": "Unauthorized"},
+    },
+)
 async def create(
     request: Request,
     response: Response,
@@ -33,7 +51,15 @@ async def create(
     return None
 
 
-@router.put("/task/{task_id}")
+@router.put(
+    "/task/{task_id}",
+    tags=["task"],
+    responses={
+        200: {"content": None},
+        401: {"description": "Unauthorized"},
+        404: {"description": "Not found"},
+    },
+)
 async def update(
     task_id: int = Path(...),
     task_form: TodoTaskIn = Body(...),
@@ -49,7 +75,16 @@ async def update(
     return None
 
 
-@router.delete("/task/{task_id}")
+@router.delete(
+    "/task/{task_id}",
+    tags=["task"],
+    response_description="Successfully Deleted",
+    responses={
+        200: {"content": None},
+        401: {"description": "Unauthorized"},
+        404: {"description": "Not found"},
+    }
+)
 async def delete(
     task_id: int = Path(...),
     db=Depends(get_db_connection),
@@ -62,13 +97,29 @@ async def delete(
     return None
 
 
-@router.get("/task/_search")
+@router.get(
+    "/task/_search",
+    tags=["task"],
+    response_model=List[TodoTaskOut],
+    responses={
+        200: {
+            "headers": {
+                "link": {
+                    "schema": {"type": "string"},
+                    "description": "次ページのURL",
+                    "example": "<https://example.com/task/_search?page=3&count=100>; rel=next",
+                },
+            },
+        },
+        401: {"description": "Unauthorized"},
+    },
+)
 async def search(
     request: Request,
     response: Response,
-    q: str = Query(..., min_length=1, max_length=100),
-    count: int = Query(100, ge=1, le=100),
-    page: int = Query(1, ge=1),
+    q: str = Query(..., min_length=1, max_length=100, description="検索文字"),
+    count: int = Query(100, ge=1, le=100, description="検索結果の最大件数"),
+    page: int = Query(1, ge=1, description="ページ数"),
     db=Depends(get_db_connection),
 ):
     user: str = "shun"
@@ -85,7 +136,12 @@ async def search(
     return [TodoTaskOut(id=t.id, title=t.title, content=t.content) for t in tasks]
 
 
-@router.get("/task/{task_id}")
+@router.get(
+    "/task/{task_id}",
+    tags=["task"],
+    response_model=TodoTaskOut,
+    responses={404: {"description": "Not found"}},
+)
 async def get(
     task_id: int = Path(...),
     db=Depends(get_db_connection),
