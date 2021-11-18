@@ -44,7 +44,7 @@ class TestCreateTask():
         client: TestClient,
         req: Dict[str, Any],
     ):
-        actual = client.post(url="/task", headers=req["headers"], json=req["data"])
+        actual = client.post(url="/v1/task", headers=req["headers"], json=req["data"])
         assert actual.status_code == 201
         assert actual.json() is None
         assert re.match(r"^http://.*/task/\d+$", actual.headers['location']) is not None
@@ -140,7 +140,7 @@ class TestCreateTask():
         req: Dict[str, Any],
         expected_body: Dict[str, Any],
     ):
-        actual = client.post(url="/task", headers=req["headers"], json=req["data"])
+        actual = client.post(url="/v1/task", headers=req["headers"], json=req["data"])
         assert actual.status_code == 422
         assert actual.json() == expected_body
 
@@ -155,7 +155,7 @@ class TestUpdateTask():
         client: TestClient,
         req: Dict[str, Any],
     ):
-        actual = client.put(url=f"/task/{req['id']}", headers=req["headers"], json=req["data"])
+        actual = client.put(url=f"/v1/task/{req['id']}", headers=req["headers"], json=req["data"])
         assert actual.status_code == 200
         assert actual.json() is None
 
@@ -169,7 +169,7 @@ class TestUpdateTask():
         req: Dict[str, Any],
         expected_body: Dict[str, Any],
     ):
-        actual = client.put(url=f"/task/{req['id']}", headers=req["headers"], json=req["data"])
+        actual = client.put(url=f"/v1/task/{req['id']}", headers=req["headers"], json=req["data"])
         assert actual.status_code == 422
         assert actual.json() == expected_body
 
@@ -192,7 +192,7 @@ class TestUpdateTask():
         client: TestClient,
         req: Dict[str, Any],
     ):
-        actual = client.put(url=f"/task/{req['id']}", headers=req["headers"], json=req["data"])
+        actual = client.put(url=f"/v1/task/{req['id']}", headers=req["headers"], json=req["data"])
         assert actual.status_code == 404
         assert actual.json() == {"detail": "Not Found"}
 
@@ -209,7 +209,7 @@ class TestDeleteTask():
         client: TestClient,
         req: Dict[str, Any],
     ):
-        actual = client.delete(url=f"/task/{req['id']}", headers=req["headers"])
+        actual = client.delete(url=f"/v1/task/{req['id']}", headers=req["headers"])
         assert actual.status_code == 200
         assert actual.json() is None
 
@@ -221,7 +221,7 @@ class TestDeleteTask():
         client: TestClient,
         req: Dict[str, Any],
     ):
-        actual = client.delete(url=f"/task/{req['id']}", headers=req["headers"])
+        actual = client.delete(url=f"/v1/task/{req['id']}", headers=req["headers"])
         assert actual.status_code == 404
         assert actual.json() == {"detail": "Not Found"}
 
@@ -239,7 +239,7 @@ class TestSearchTask():
                  'id': 2,
                  'title': 'title2'},
             ],
-            '<http://testserver/task/_search?q=title&count=2&page=1?q=title&count=2&page=2>; rel="next"',
+            '<http://testserver/v1/task/_search?q=title&count=2&page=1?q=title&count=2&page=2>; rel="next"',
         ),
         "count key nothing": (
             {"q": "title", "page": 1},
@@ -315,7 +315,7 @@ class TestSearchTask():
         expected_body: Dict[str, Any],
         expected_link_header: Optional[str],
     ):
-        actual = client.get(url="/task/_search", headers={"content-type": "application/json"}, params=params)
+        actual = client.get(url="/v1/task/_search", headers={"content-type": "application/json"}, params=params)
         assert actual.status_code == 200
         assert actual.json() == expected_body
         assert actual.headers["link"] == expected_link_header
@@ -383,7 +383,7 @@ class TestSearchTask():
         params: Dict[str, Any],
         expected_body: Dict[str, Any],
     ):
-        actual = client.get(url="/task/_search", headers={"content-type": "application/json"}, params=params)
+        actual = client.get(url="/v1/task/_search", headers={"content-type": "application/json"}, params=params)
         assert actual.status_code == 422
         assert actual.json() == expected_body
 
@@ -404,7 +404,7 @@ class TestGetTask():
         req: Dict[str, Any],
         response_body: Dict[str, Any],
     ):
-        actual = client.get(url=f"/task/{req['id']}", headers=req["headers"])
+        actual = client.get(url=f"/v1/task/{req['id']}", headers=req["headers"])
         assert actual.status_code == 200
         assert actual.json() == response_body
 
@@ -416,6 +416,6 @@ class TestGetTask():
         client: TestClient,
         req: Dict[str, Any],
     ):
-        actual = client.get(url=f"/task/{req['id']}", headers=req["headers"])
+        actual = client.get(url=f"/v1/task/{req['id']}", headers=req["headers"])
         assert actual.status_code == 404
         assert actual.json() == {"detail": "Not Found"}

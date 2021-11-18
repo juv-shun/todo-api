@@ -18,7 +18,7 @@ logger.addHandler(handler)
 logger.setLevel(APP_LOG_LEVEL)
 
 app = FastAPI(title="ToDo Application Sample", version="0.1.0")
-app.include_router(router)
+app.include_router(router, prefix="/v1")
 
 
 @app.on_event("startup")
