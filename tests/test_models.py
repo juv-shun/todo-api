@@ -1,7 +1,7 @@
 
 import pytest
 
-from ..models import ToDoTaskModel
+from src.models import ToDoTaskModel
 
 
 @pytest.mark.asyncio
