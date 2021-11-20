@@ -23,6 +23,14 @@
       {
         "name": "LOG_LEVEL",
         "value": "error"
+      },
+      {
+        "name": "USER_POOL_ID",
+        "value": "${user_pool_id}"
+      },
+      {
+        "name": "APP_CLIENT_ID",
+        "value": "${user_pool_client_id}"
       }
     ],
     "portMappings": [
