@@ -1,9 +1,12 @@
+from pydantic import BaseModel
 from typing import List
 from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query
+from fastapi_cloudauth.cognito import CognitoClaims
 
 from starlette.requests import Request
 from starlette.responses import Response
 
+from .auth import get_current_user
 from .db import client as db_client
 from .schemas import TodoTaskIn, TodoTaskOut
 from .models import ToDoTaskModel
@@ -39,12 +42,12 @@ async def create(
     response: Response,
     task_form: TodoTaskIn = Body(...),
     db=Depends(get_db_connection),
+    user: CognitoClaims = Depends(get_current_user),
 ):
-    user = "shun"
     task = ToDoTaskModel(
         title=task_form.title,
         content=task_form.content,
-        user=user,
+        user=user.username,
     )
     await task.create(db)
     response.headers["location"] = f"{request.url}/{task.id}"
@@ -64,9 +67,9 @@ async def update(
     id: int = Path(...),
     task_form: TodoTaskIn = Body(...),
     db=Depends(get_db_connection),
+    user: CognitoClaims = Depends(get_current_user),
 ):
-    user = "shun"
-    task = await ToDoTaskModel.get(db, id, user)
+    task = await ToDoTaskModel.get(db, id, user.username)
     if not task:
         raise HTTPException(status_code=404)
     task.title = task_form.title
@@ -88,9 +91,9 @@ async def update(
 async def delete(
     id: int = Path(...),
     db=Depends(get_db_connection),
+    user: CognitoClaims = Depends(get_current_user),
 ):
-    user = "shun"
-    task = await ToDoTaskModel.get(db, id, user)
+    task = await ToDoTaskModel.get(db, id, user.username)
     if not task:
         raise HTTPException(status_code=404)
     await task.delete(db)
@@ -121,11 +124,11 @@ async def search(
     count: int = Query(100, ge=1, le=100, description="検索結果の最大件数"),
     page: int = Query(1, ge=1, description="ページ数"),
     db=Depends(get_db_connection),
+    user: CognitoClaims = Depends(get_current_user),
 ):
-    user: str = "shun"
     offset = count * (page - 1)
     limit = count + 1  # add 1 object to check next page
-    tasks = await ToDoTaskModel.search(db, q, user, offset, limit)
+    tasks = await ToDoTaskModel.search(db, q, user.username, offset, limit)
 
     # build response header `link`
     response.headers["link"] = ""
@@ -145,9 +148,9 @@ async def search(
 async def get(
     id: int = Path(...),
     db=Depends(get_db_connection),
+    user: CognitoClaims = Depends(get_current_user),
 ):
-    user = "shun"
-    task = await ToDoTaskModel.get(db, id, user)
+    task = await ToDoTaskModel.get(db, id, user.username)
     if not task:
         raise HTTPException(status_code=404)
     return TodoTaskOut(id=id, title=task.id, conent=task.content)
