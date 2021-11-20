@@ -18,5 +18,5 @@ variable "service_name" {
 }
 
 variable "task_definition_image_tag" {
-  default = "master"
+  default = "latest"
 }
