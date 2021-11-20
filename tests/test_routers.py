@@ -393,7 +393,7 @@ class TestGetTask():
     patterns_200 = {
         "exist id": (
             {"id": 1, "headers": {"content-type": "application/json"}},
-            {'id': 1, 'title': '1', 'content': None},
+            {'id': 1, 'title': 'title1', 'content': 'content1'},
         )
     }
 

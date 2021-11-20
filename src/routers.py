@@ -153,4 +153,4 @@ async def get(
     task = await ToDoTaskModel.get(db, id, user.username)
     if not task:
         raise HTTPException(status_code=404)
-    return TodoTaskOut(id=id, title=task.id, conent=task.content)
+    return TodoTaskOut(id=id, title=task.title, content=task.content)
