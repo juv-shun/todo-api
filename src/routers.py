@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from typing import List
 from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query
 from fastapi_cloudauth.cognito import CognitoClaims
