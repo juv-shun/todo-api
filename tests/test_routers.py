@@ -18,23 +18,23 @@ class TestCreateTask():
     patterns_201 = {
         "normal request": {
             "headers": {"content-type": "application/json"},
-            "data": {"title": "a"*100, "content": "a"*1000}
+            "body": {"title": "a"*100, "content": "a"*1000}
         },
         "content key nothing": {
             "headers": {"content-type": "application/json"},
-            "data": {"title": "a"*100}
+            "body": {"title": "a"*100}
         },
         "content key empty": {
             "headers": {"content-type": "application/json"},
-            "data": {"title": "a"*100, "content": ""}
+            "body": {"title": "a"*100, "content": ""}
         },
         "content-type header key nothing": {
             "headers": {},
-            "data": {"title": "a"*100, "content": "a"*1000}
+            "body": {"title": "a"*100, "content": "a"*1000}
         },
         "title and content are not string, but ok": {
             "headers": {},
-            "data": {"title": 1, "content": False}
+            "body": {"title": 1, "content": False}
         },
     }
 
@@ -44,7 +44,7 @@ class TestCreateTask():
         client: TestClient,
         req: Dict[str, Any],
     ):
-        actual = client.post(url="/v1/task", headers=req["headers"], json=req["data"])
+        actual = client.post(url="/v1/task", headers=req["headers"], json=req["body"])
         assert actual.status_code == 201
         assert actual.json() is None
         assert re.match(r"^http://.*/task/\d+$", actual.headers['location']) is not None
@@ -53,7 +53,7 @@ class TestCreateTask():
         "title key nothing": (
             {
                 "headers": {"content-type": "application/json"},
-                "data": {"content": "a"*1000}
+                "body": {"content": "a"*1000}
             },
             {
                 'detail': [{
@@ -66,7 +66,7 @@ class TestCreateTask():
         "title value empty": (
             {
                 "headers": {"content-type": "application/json"},
-                "data": {"title": "", "content": "a"*1000}
+                "body": {"title": "", "content": "a"*1000}
             },
             {
                 'detail': [{
@@ -80,7 +80,7 @@ class TestCreateTask():
         "title value over max_length": (
             {
                 "headers": {"content-type": "application/json"},
-                "data": {"title": "a" * 101, "content": "a"*1000}
+                "body": {"title": "a" * 101, "content": "a"*1000}
             },
             {
                 'detail': [{
@@ -94,7 +94,7 @@ class TestCreateTask():
         "content value over max_length": (
             {
                 "headers": {"content-type": "application/json"},
-                "data": {"title": "a"*100, "content": "a"*1001}
+                "body": {"title": "a"*100, "content": "a"*1001}
             },
             {
                 'detail': [{
@@ -108,7 +108,7 @@ class TestCreateTask():
         "title is list object": (
             {
                 "headers": {"content-type": "application/json"},
-                "data": {"title": ["a"]*10, "content": "a"*1000}
+                "body": {"title": ["a"]*10, "content": "a"*1000}
             },
             {
                 'detail': [{
@@ -121,7 +121,7 @@ class TestCreateTask():
         "content is dict object": (
             {
                 "headers": {"content-type": "application/json"},
-                "data": {"title": "a" * 100, "content": {"a": 1}}
+                "body": {"title": "a" * 100, "content": {"a": 1}}
             },
             {
                 'detail': [{
@@ -140,7 +140,7 @@ class TestCreateTask():
         req: Dict[str, Any],
         expected_body: Dict[str, Any],
     ):
-        actual = client.post(url="/v1/task", headers=req["headers"], json=req["data"])
+        actual = client.post(url="/v1/task", headers=req["headers"], json=req["body"])
         assert actual.status_code == 422
         assert actual.json() == expected_body
 
@@ -155,7 +155,7 @@ class TestUpdateTask():
         client: TestClient,
         req: Dict[str, Any],
     ):
-        actual = client.put(url=f"/v1/task/{req['id']}", headers=req["headers"], json=req["data"])
+        actual = client.put(url=f"/v1/task/{req['id']}", headers=req["headers"], json=req["body"])
         assert actual.status_code == 200
         assert actual.json() is None
 
@@ -169,7 +169,7 @@ class TestUpdateTask():
         req: Dict[str, Any],
         expected_body: Dict[str, Any],
     ):
-        actual = client.put(url=f"/v1/task/{req['id']}", headers=req["headers"], json=req["data"])
+        actual = client.put(url=f"/v1/task/{req['id']}", headers=req["headers"], json=req["body"])
         assert actual.status_code == 422
         assert actual.json() == expected_body
 
@@ -177,12 +177,12 @@ class TestUpdateTask():
         "non-exist id": {
             "id": 9999,
             "headers": {"content-type": "application/json"},
-            "data": {"title": "a"*100, "content": "a"*1000},
+            "body": {"title": "a"*100, "content": "a"*1000},
         },
         "exist id, but not users' id": {
             "id": 4,
             "headers": {"content-type": "application/json"},
-            "data": {"title": "a"*100, "content": "a"*1000},
+            "body": {"title": "a"*100, "content": "a"*1000},
         },
     }
 
@@ -192,7 +192,7 @@ class TestUpdateTask():
         client: TestClient,
         req: Dict[str, Any],
     ):
-        actual = client.put(url=f"/v1/task/{req['id']}", headers=req["headers"], json=req["data"])
+        actual = client.put(url=f"/v1/task/{req['id']}", headers=req["headers"], json=req["body"])
         assert actual.status_code == 404
         assert actual.json() == {"detail": "Not Found"}
 
