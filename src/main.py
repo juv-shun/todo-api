@@ -17,7 +17,11 @@ handler = logging.StreamHandler()
 logger.addHandler(handler)
 logger.setLevel(APP_LOG_LEVEL)
 
-app = FastAPI(title="ToDo Application Sample", version="0.1.0")
+app = FastAPI(
+    title="ToDo Application Sample",
+    version="0.1.0",
+    description="ToDoタスクを管理するAPI。認証はCognitoユーザプールのID Tokenを検証する。",
+)
 app.include_router(router, prefix="/v1")
 
 
