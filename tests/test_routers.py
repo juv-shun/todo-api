@@ -6,6 +6,19 @@ import pytest
 from starlette.testclient import TestClient
 
 from src.main import app
+from src.auth import get_current_user
+
+
+# mock up cognito authentication
+def mock_cognito_user():
+    class MockUser():
+        def __init__(self, username):
+            self.username = username
+
+    return MockUser('shun')
+
+
+app.dependency_overrides[get_current_user] = mock_cognito_user
 
 
 @pytest.fixture(scope='module')
