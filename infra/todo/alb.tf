@@ -45,7 +45,7 @@ resource "aws_s3_bucket_policy" "access_logs" {
     ]
   })
 
-  depends_on = [aws_s3_bucket.access_logs]
+  depends_on = [aws_s3_bucket.access_logs, aws_s3_bucket_public_access_block.access_logs]
 }
 
 resource "aws_s3_bucket_public_access_block" "access_logs" {
