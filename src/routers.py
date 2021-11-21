@@ -85,7 +85,7 @@ async def update(
         200: {"content": None},
         401: {"description": "Unauthorized"},
         404: {"description": "Not found"},
-    }
+    },
 )
 async def delete(
     id: int = Path(...),
@@ -133,7 +133,9 @@ async def search(
     response.headers["link"] = ""
     if len(tasks) > count:
         tasks = tasks[:-1]
-        response.headers["link"] += f'<{request.url}?q={q}&count={count}&page={page + 1}>; rel="next"'
+        response.headers[
+            "link"
+        ] += f'<{request.url}?q={q}&count={count}&page={page + 1}>; rel="next"'
 
     return [TodoTaskOut(id=t.id, title=t.title, content=t.content) for t in tasks]
 

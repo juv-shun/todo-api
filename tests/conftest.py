@@ -35,12 +35,12 @@ async def init_db(db_conn):
 
     async def insert_dummy(db_conn):
         records = [
-            ['title1', 'content1', 'shun'],
-            ['title2', '', 'shun'],
-            ['title3', None, 'shun'],
-            ['title4', 'content4', 'dummyuser'],
-            ['title5', '', 'dummyuser'],
-            ['title6', None, 'dummyuser'],
+            ["title1", "content1", "shun"],
+            ["title2", "", "shun"],
+            ["title3", None, "shun"],
+            ["title4", "content4", "dummyuser"],
+            ["title5", "", "dummyuser"],
+            ["title6", None, "dummyuser"],
         ]
         query = "INSERT INTO tasks (title, content, username) VALUES($1, $2, $3)"
         await db_conn.executemany(query, records)
