@@ -63,6 +63,8 @@ resource "aws_ecs_service" "service" {
   lifecycle {
     ignore_changes = [desired_count, load_balancer, task_definition]
   }
+
+  depends_on = [aws_alb.load_balancer]
 }
 
 resource "aws_ecs_task_definition" "task_def" {
