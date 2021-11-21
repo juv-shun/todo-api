@@ -1,3 +1,11 @@
+# 概要
+ToDoタスクを管理するバックエンドAPIサーバシステムのサンプル。
+
+# API仕様書
+FastAPIの自動生成機能により提供されます。
+- Swagger: http://{{ドメイン名}}/docs
+- ReDoc: http://{{ドメイン名}}/redoc
+
 # システム構成図
 ![システム構成図](./docs/system_structure.png)
 
@@ -44,8 +52,9 @@
    - 実施後、`userPoolId`、`clientId`変数に値がセットされていることを確認する。
 
     ```sh
-    $ (cd infra/todo && export userPoolId=`terraform output -json | jq '.cognito_user_pool.value.user_pool_id' -r`)
-    $ (cd infra/todo && export clientId=`terraform output -json | jq '.cognito_user_pool.value.user_pool_client_id' -r`)
+    $ cd infra/todo
+    $ userPoolId=`terraform output -json | jq '.cognito_user_pool.value.user_pool_id' -r`
+    $ clientId=`terraform output -json | jq '.cognito_user_pool.value.user_pool_client_id' -r`
     ```
 
 2. ユーザ名、パスワード、メールアドレスを変数にセット
@@ -53,9 +62,9 @@
     - パスワードは、8文字以上、大文字・小文字・数値がそれぞれ1文字以上含むこと
 
     ```sh
-    $ export userName=
-    $ export password=
-    $ export email=
+    $ userName=
+    $ password=
+    $ email=
     ```
 
 3. ユーザを作成
@@ -71,6 +80,17 @@
         --username ${userName} \
         --password ${password} \
         --permanent
+    ```
+
+4. (補足)以下のコマンドを実行することで、ユーザのIDトークンを取得することができます。
+
+    ```sh
+    id_token=`aws cognito-idp admin-initiate-auth \
+        --user-pool-id ${userPoolId} \
+        --client-id ${clientId} \
+        --auth-flow "ADMIN_USER_PASSWORD_AUTH" \
+        --auth-parameters USERNAME=${userName},PASSWORD=${password} \
+            | jq '.AuthenticationResult.IdToken' -r`
     ```
 
 ## 3. デプロイ
@@ -90,5 +110,8 @@
 デプロイ先のAWSアカウントのコンソールから実施する。
 
 ### 作業手順
-1. 以下の箇所を変更し、サービスの更新を実行する。
-    -
+1. 以下の設定で、ECSサービスの更新を実行する。
+    - 新しいデプロイの強制: チェックマークをつける
+    - タスクの数: 必要なタスク数を入力
+2. CodeDeployのライフサイクルが`AfterAllowTestTraffic`まで進んだら、「トラフィックの再ルーティング」ボタンをクリックする。
+3. CodeDeployのライフサイクルが`AfterAllowTraffic`まで進んだら、「元のタスクセットの終了」ボタンをクリックする。
