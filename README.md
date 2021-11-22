@@ -6,6 +6,8 @@ FastAPIの自動生成機能により提供されます。
 - Swagger: http://{{ドメイン名}}/docs
 - ReDoc: http://{{ドメイン名}}/redoc
 
+作成したALBのドメイン名で上記ドメイン名の箇所を置換し、リクエストしてください。
+
 # システム構成図
 ![システム構成図](./docs/system_structure.png)
 
