@@ -8,6 +8,7 @@ services:
       - "80:80"
     volumes:
       - "./app:/app/app"
+      - "./tests:/app/tests"
     environment:
       DB_HOST: db
       DB_USER: admin
