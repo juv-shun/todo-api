@@ -5,8 +5,8 @@ import pytest
 
 from starlette.testclient import TestClient
 
-from src.main import app
-from src.auth import get_current_user
+from app.main import app
+from app.auth import get_current_user
 
 
 # mock up cognito authentication

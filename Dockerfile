@@ -13,4 +13,4 @@ RUN pip install -U pip \
 
 COPY scripts/prestart.sh /app
 COPY scripts/init_db /app/init_db
-COPY ./src /app/app
+COPY ./app /app/app
