@@ -52,10 +52,10 @@ resource "aws_ecs_service" "service" {
   }
 
   network_configuration {
-    security_groups = [data.terraform_remote_state.network.outputs.security_group_ids["default"]]
+    security_groups = [aws_default_security_group.default.id]
     subnets = [
-      data.terraform_remote_state.network.outputs.aws_vpc_subnet_ids["public_subnet_az1"],
-      data.terraform_remote_state.network.outputs.aws_vpc_subnet_ids["public_subnet_az2"],
+      aws_subnet.public_subnet_az1.id,
+      aws_subnet.public_subnet_az2.id,
     ]
     assign_public_ip = true
   }

@@ -5,7 +5,7 @@ resource "aws_rds_cluster" "db_cluster" {
   master_username                 = "postgres"
   master_password                 = "password"
   database_name                   = "todo"
-  vpc_security_group_ids          = [data.terraform_remote_state.network.outputs.security_group_ids["default"]]
+  vpc_security_group_ids          = [aws_default_security_group.default.id]
   db_subnet_group_name            = aws_db_subnet_group.subnet_group.id
   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.cluster_parameter_group.id
   backup_retention_period         = 1
@@ -31,8 +31,8 @@ resource "aws_db_subnet_group" "subnet_group" {
   description = "subnet group for todo-app"
 
   subnet_ids = [
-    data.terraform_remote_state.network.outputs.aws_vpc_subnet_ids["private_subnet_az1"],
-    data.terraform_remote_state.network.outputs.aws_vpc_subnet_ids["private_subnet_az2"],
+    aws_subnet.private_subnet_az1.id,
+    aws_subnet.private_subnet_az2.id,
   ]
 }
 

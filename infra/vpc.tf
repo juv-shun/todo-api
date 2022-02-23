@@ -95,3 +95,36 @@ resource "aws_route_table_association" "i_gw_association_az2" {
   subnet_id      = aws_subnet.public_subnet_az2.id
   route_table_id = aws_route_table.igw_route.id
 }
+
+
+#####################################
+# Security Group
+#####################################
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    protocol  = -1
+    self      = true
+    from_port = 0
+    to_port   = 0
+  }
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["172.16.0.0/16"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "[${var.service_name}] default"
+  }
+}

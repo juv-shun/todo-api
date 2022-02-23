@@ -4,12 +4,12 @@
 resource "aws_alb" "load_balancer" {
   name = var.service_name
   security_groups = [
-    data.terraform_remote_state.network.outputs.security_group_ids["default"],
+    aws_default_security_group.default.id,
     aws_security_group.http_sg.id
   ]
   subnets = [
-    data.terraform_remote_state.network.outputs.aws_vpc_subnet_ids["public_subnet_az1"],
-    data.terraform_remote_state.network.outputs.aws_vpc_subnet_ids["public_subnet_az2"],
+    aws_subnet.public_subnet_az1.id,
+    aws_subnet.public_subnet_az2.id,
   ]
 
   access_logs {
@@ -121,7 +121,7 @@ resource "aws_alb_target_group" "target_group_blue" {
   port                 = 80
   protocol             = "HTTP"
   target_type          = "ip"
-  vpc_id               = data.terraform_remote_state.network.outputs.aws_vpc_subnet_ids["vpc"]
+  vpc_id               = aws_vpc.main.id
   deregistration_delay = 90
 
   health_check {
@@ -140,7 +140,7 @@ resource "aws_alb_target_group" "target_group_green" {
   port                 = 80
   protocol             = "HTTP"
   target_type          = "ip"
-  vpc_id               = data.terraform_remote_state.network.outputs.aws_vpc_subnet_ids["vpc"]
+  vpc_id               = aws_vpc.main.id
   deregistration_delay = 90
 
   health_check {
@@ -160,7 +160,7 @@ resource "aws_alb_target_group" "target_group_green" {
 resource "aws_security_group" "http_sg" {
   name        = "${var.service_name}-http-sg"
   description = "Allow HTTP inbound traffic"
-  vpc_id      = data.terraform_remote_state.network.outputs.aws_vpc_subnet_ids["vpc"]
+  vpc_id      = aws_vpc.main.id
 
   ingress {
     from_port   = 443

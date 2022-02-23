@@ -13,18 +13,11 @@
 - aws-cli コマンドが利用可能であり、`aws configure`にて、AWS Access Key ID、AWS Secret Access Key、Default region nameがセットされていること。
 
 ### 作業手順
-1. VPCネットワークを構築
+1. インフラの構築
    - terraform実施後、terraformが正常終了していることを確認する。
 
     ```sh
-    $ (cd infra/network && terraform init && terraform apply)
-    ```
-
-2. その他アプリケーションで利用するAWSリソースの構築
-   - terraform実施後、terraformが正常終了していることを確認する。
-
-    ```sh
-    $ (cd infra/todo && terraform init && terraform apply)
+    $ (cd infra && terraform init && terraform apply)
     ```
 
 ## 2. Dockerイメージを作成
