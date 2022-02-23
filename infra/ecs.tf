@@ -76,7 +76,7 @@ resource "aws_ecs_task_definition" "task_def" {
   task_role_arn            = aws_iam_role.task_role.arn
   execution_role_arn       = aws_iam_role.task_exe_role.arn
   container_definitions = templatefile("${path.module}/task_definition.tpl", {
-    image               = "${aws_ecr_repository.ecr.repository_url}:${var.task_definition_image_tag}",
+    image               = "${aws_ecr_repository.ecr.repository_url}:latest",
     db_host             = aws_rds_cluster.db_cluster.endpoint,
     db_user             = aws_rds_cluster.db_cluster.master_username,
     db_password         = aws_rds_cluster.db_cluster.master_password,

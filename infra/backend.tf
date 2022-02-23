@@ -11,10 +11,7 @@ terraform {
 provider "aws" {
   region = "ap-northeast-1"
 }
+
 variable "service_name" {
   default = "todo-app"
-}
-
-variable "task_definition_image_tag" {
-  default = "latest"
 }
