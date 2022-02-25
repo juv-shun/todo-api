@@ -66,11 +66,16 @@ resource "aws_iam_role_policy" "codebuild_service_role" {
       "Statement" : [
         {
           "Resource" : "*",
+          "Action" : "ecr:GetAuthorizationToken",
+          "Effect" : "Allow"
+        },
+        {
+          "Resource" : aws_ecr_repository.ecr.arn,
           "Action" : ["ecr:*"],
           "Effect" : "Allow"
         },
         {
-          "Resource" : "*",
+          "Resource" : aws_cloudwatch_log_group.code_build_log_group.arn,
           "Action" : [
             "logs:CreateLogGroup",
             "logs:CreateLogStream",
@@ -79,7 +84,7 @@ resource "aws_iam_role_policy" "codebuild_service_role" {
           "Effect" : "Allow"
         },
         {
-          "Resource" : "*",
+          "Resource" : ["${aws_s3_bucket.pipeline_artifact.arn}*"]
           "Action" : [
             "s3:PutObject",
             "s3:GetObject",
