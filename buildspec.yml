@@ -13,7 +13,7 @@ phases:
       - echo Building the Docker image...
       - docker build -t $IMAGE_NAME:latest .
       - echo Build taskdef.json...
-      - $(aws ecs describe-task-definition --task-definition $ECS_TASK_DEFINITION_ARN --query taskDefinition | jq '.containerDefinitions[0].image="<IMAGE1_NAME>"' > taskdef.json)
+      - aws ecs describe-task-definition --task-definition $ECS_TASK_DEFINITION_ARN --query taskDefinition | jq '.containerDefinitions[0].image="<IMAGE1_NAME>"' > taskdef.json
       - cat taskdef.json
   post_build:
     commands:
