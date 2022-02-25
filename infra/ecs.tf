@@ -125,7 +125,7 @@ data "aws_iam_policy_document" "ecs_assume_policy" {
 #####################################
 # CloudWatch Logs
 #####################################
-resource "aws_cloudwatch_log_group" "log_group" {
-  name              = "/ecs/${var.service_name}"
-  retention_in_days = 30
+resource "aws_cloudwatch_log_group" "ecs_log_group" {
+  name              = "/aws/ecs/${var.service_name}"
+  retention_in_days = 7
 }

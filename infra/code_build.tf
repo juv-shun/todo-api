@@ -93,3 +93,11 @@ resource "aws_iam_role_policy" "codebuild_service_role" {
 }
 POLICY
 }
+
+#####################################
+# CloudWatch Logs
+#####################################
+resource "aws_cloudwatch_log_group" "code_build_log_group" {
+  name              = "/aws/codebuild/${var.service_name}"
+  retention_in_days = 7
+}
