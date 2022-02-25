@@ -83,7 +83,7 @@ resource "aws_s3_bucket" "pipeline_artifact" {
 # IAM
 #####################################
 resource "aws_iam_role" "codepipeline_service_role" {
-  name               = "role-codepipeline-service-role"
+  name               = "${var.service_name}-codepipeline-service-role"
   assume_role_policy = data.aws_iam_policy_document.codepipeline_service_role_assume_policy.json
 }
 
@@ -99,7 +99,7 @@ data "aws_iam_policy_document" "codepipeline_service_role_assume_policy" {
 }
 
 resource "aws_iam_role_policy" "codepipeline_service_role" {
-  name = "${var.service_name}-codepipeline-policy"
+  name = "${var.service_name}-codepipeline-service-role-policy"
   role = aws_iam_role.codepipeline_service_role.name
   policy = jsonencode(
     {
