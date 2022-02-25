@@ -15,3 +15,6 @@ provider "aws" {
 variable "service_name" {
   default = "todo-app"
 }
+
+# github接続を現在terraformで行えないため、AWSコンソールで生成したのちにARNを記載する
+variable "connection_star_github_arn" {}
