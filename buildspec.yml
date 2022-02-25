@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
+      - IMAGE_NAME=${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/todo-app
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t $IMAGE_NAME:latest .
+      - echo Build taskdef.json...
+      - $(aws ecs describe-task-definition --task-definition $ECS_TASK_DEFINITION_ARN --query taskDefinition | jq '.containerDefinitions[0].image="<IMAGE1_NAME>"' > taskdef.json)
+      - cat taskdef.json
+  post_build:
+    commands:
+      - echo Pushing the Docker image...
+      - docker push $IMAGE_NAME:latest
+      - printf '{"Version":"1.0","ImageURI":"%s"}' $IMAGE_NAME:latest > imageDetail.json
+artifacts:
+  files:
+    - imageDetail.json
+    - taskdef.json
