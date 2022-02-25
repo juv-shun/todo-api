@@ -19,10 +19,9 @@ resource "aws_codepipeline" "codepipeline" {
       output_artifacts = ["source_output"]
 
       configuration = {
-        BranchName           = "master"
-        ConnectionArn        = var.connection_star_github_arn
-        FullRepositoryId     = var.github_repository_id
-        OutputArtifactFormat = "CODE_ZIP"
+        BranchName       = "master"
+        ConnectionArn    = var.connection_star_github_arn
+        FullRepositoryId = var.github_repository_id
       }
     }
   }
