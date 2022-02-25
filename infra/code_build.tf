@@ -25,7 +25,7 @@ resource "aws_codebuild_project" "codebuild" {
     }
 
     environment_variable {
-      name = "REPOSTORY_NAME"
+      name  = "REPOSTORY_NAME"
       value = aws_ecr_repository.ecr.name
     }
   }
@@ -58,45 +58,44 @@ data "aws_iam_policy_document" "codebuild_service_role_assume_policy" {
 }
 
 resource "aws_iam_role_policy" "codebuild_service_role" {
-  name   = "${var.service_name}-codebuild-policy"
-  role   = aws_iam_role.codebuild_service_role.name
-  policy = <<POLICY
-{
-    "Version": "2012-10-17",
-    "Statement": [
+  name = "${var.service_name}-codebuild-policy"
+  role = aws_iam_role.codebuild_service_role.name
+  policy = jsonencode(
+    {
+      "Version" : "2012-10-17",
+      "Statement" : [
         {
-            "Resource": "*",
-            "Action": ["ecr:*"],
-            "Effect": "Allow"
+          "Resource" : "*",
+          "Action" : ["ecr:*"],
+          "Effect" : "Allow"
         },
         {
-            "Resource": "*",
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Effect": "Allow"
+          "Resource" : "*",
+          "Action" : [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+          ],
+          "Effect" : "Allow"
         },
         {
-            "Resource": "*",
-            "Action": [
-                "s3:PutObject",
-                "s3:GetObject",
-                "s3:GetObjectVersion"
-            ],
-            "Effect": "Allow"
+          "Resource" : "*",
+          "Action" : [
+            "s3:PutObject",
+            "s3:GetObject",
+            "s3:GetObjectVersion"
+          ],
+          "Effect" : "Allow"
         },
         {
-            "Resource": "*",
-            "Action": [
-                "ecs:DescribeTaskDefinition"
-            ],
-            "Effect": "Allow"
+          "Resource" : "*",
+          "Action" : [
+            "ecs:DescribeTaskDefinition"
+          ],
+          "Effect" : "Allow"
         }
-    ]
-}
-POLICY
+      ]
+  })
 }
 
 #####################################
