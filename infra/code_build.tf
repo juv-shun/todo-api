@@ -23,11 +23,16 @@ resource "aws_codebuild_project" "codebuild" {
       name  = "ECS_TASK_DEFINITION_ARN"
       value = aws_ecs_task_definition.task_def.arn
     }
+
+    environment_variable {
+      name = "REPOSTORY_NAME"
+      value = aws_ecr_repository.ecr.name
+    }
   }
 
   source {
     type            = "GITHUB"
-    location        = "https://github.com/juv-shun/todo-api.git"
+    location        = "https://github.com/${var.github_repository_id}.git"
     git_clone_depth = 1
     buildspec       = "buildspec.yml"
   }

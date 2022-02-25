@@ -17,7 +17,7 @@ resource "aws_rds_cluster" "db_cluster" {
 
 resource "aws_rds_cluster_instance" "db_instance" {
   count                        = 1
-  identifier                   = "todo-app-${count.index}"
+  identifier                   = "${var.service_name}-${count.index}"
   cluster_identifier           = aws_rds_cluster.db_cluster.id
   instance_class               = "db.t3.medium"
   engine                       = aws_rds_cluster.db_cluster.engine
@@ -28,7 +28,7 @@ resource "aws_rds_cluster_instance" "db_instance" {
 
 resource "aws_db_subnet_group" "subnet_group" {
   name        = var.service_name
-  description = "subnet group for todo-app"
+  description = "subnet group for ${var.service_name}"
 
   subnet_ids = [
     aws_subnet.private_subnet_az1.id,

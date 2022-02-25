@@ -21,7 +21,7 @@ resource "aws_codepipeline" "codepipeline" {
       configuration = {
         BranchName           = "master"
         ConnectionArn        = var.connection_star_github_arn
-        FullRepositoryId     = "juv-shun/todo-api"
+        FullRepositoryId     = var.github_repository_id
         OutputArtifactFormat = "CODE_ZIP"
       }
     }

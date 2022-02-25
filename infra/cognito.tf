@@ -1,5 +1,5 @@
 resource "aws_cognito_user_pool" "pool" {
-  name                       = "todo-app"
+  name                       = var.service_name
   auto_verified_attributes   = ["email"]
   sms_authentication_message = " 認証コードは {####} です。"
 
@@ -32,7 +32,7 @@ resource "aws_cognito_user_pool" "pool" {
 
 resource "aws_cognito_user_pool_client" "client" {
   user_pool_id           = aws_cognito_user_pool.pool.id
-  name                   = "todo-app-clinet"
+  name                   = "${var.service_name}-clinet"
   id_token_validity      = 60
   refresh_token_validity = 30
   access_token_validity  = 60
