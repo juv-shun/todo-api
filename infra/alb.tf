@@ -13,47 +13,10 @@ resource "aws_alb" "load_balancer" {
   ]
 
   access_logs {
-    bucket  = aws_s3_bucket.access_logs.id
+    bucket  = var.access-log-bucket
+    prefix  = "alb.${var.service_name}"
     enabled = true
   }
-
-  depends_on = [aws_s3_bucket.access_logs]
-}
-
-#####################################
-# Access log Bucket
-#####################################
-resource "aws_s3_bucket" "access_logs" {
-  bucket        = "${var.service_name}-access-logs"
-  force_destroy = true
-}
-
-resource "aws_s3_bucket_policy" "access_logs" {
-  bucket = aws_s3_bucket.access_logs.id
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Sid" : "",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "arn:aws:iam::582318560864:root"
-        },
-        "Action" : "s3:PutObject",
-        "Resource" : "arn:aws:s3:::${aws_s3_bucket.access_logs.id}/*"
-      }
-    ]
-  })
-
-  depends_on = [aws_s3_bucket.access_logs, aws_s3_bucket_public_access_block.access_logs]
-}
-
-resource "aws_s3_bucket_public_access_block" "access_logs" {
-  bucket                  = aws_s3_bucket.access_logs.id
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
 }
 
 #####################################
