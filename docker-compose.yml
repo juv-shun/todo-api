@@ -19,8 +19,15 @@ services:
       USER_POOL_ID: $userPoolId
       APP_CLIENT_ID: $clientId
     command: "/start-reload.sh"
+    depends_on:
+      - fluent-bit
     networks:
       - todo
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: "localhost:24224"
+        fluentd-async-connect: "false"
 
   db:
     image: postgres:latest
@@ -34,6 +41,16 @@ services:
       TZ: Asia/Tokyo
     volumes:
       - ./scripts/init_db:/docker-entrypoint-initdb.d
+    networks:
+      - todo
+
+  fluent-bit:
+    image: fluent/fluent-bit
+    volumes:
+      - ./fluent-bit/local/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./fluent-bit/local/parsers.conf:/fluent-bit/etc/parsers.conf
+    ports:
+      - "24224:24224"
     networks:
       - todo
 
