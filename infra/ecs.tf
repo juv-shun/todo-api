@@ -5,6 +5,10 @@ resource "aws_ecr_repository" "ecr" {
   name = var.service_name
 }
 
+resource "aws_ecr_repository" "ecr-fluentbit" {
+  name = "${var.service_name}-fluentbit"
+}
+
 resource "aws_ecr_lifecycle_policy" "ecr_lifecycle" {
   repository = aws_ecr_repository.ecr.name
 
@@ -120,11 +124,45 @@ resource "aws_ecs_task_definition" "task_def" {
         }
       ]
       logConfiguration = {
-        logDriver = "awslogs"
+        logDriver = "awsfirelens"
+      }
+      dependsOn = [
+        {
+          containerName = "log_router"
+          condition     = "HEALTHY"
+        }
+      ]
+    },
+    {
+      name      = "log_router"
+      image     = "${aws_ecr_repository.ecr-fluentbit.repository_url}:latest"
+      essential = true
+      environment = [
+        {
+          name  = "S3_BUCKET"
+          value = var.application-log-bucket
+        },
+        {
+          name  = "SERVICE_NAME"
+          value = var.service_name
+        }
+      ]
+      healthCheck = {
+        command = ["CMD-SHELL", "echo 'Hello' || exit 1"]
+      }
+      logConfiguration = {
+        logDriver = "awslogs",
         options = {
-          awslogs-group         = "/aws/ecs/${var.service_name}"
+          awslogs-group         = "/aws/ecs/todo-app"
           awslogs-region        = "ap-northeast-1"
-          awslogs-stream-prefix = "app"
+          awslogs-stream-prefix = "log_router"
+        }
+      },
+      firelensConfiguration = {
+        type = "fluentbit"
+        options = {
+          config-file-type  = "file"
+          config-file-value = "/fluent-bit/etc/extra.conf"
         }
       }
     }
@@ -148,6 +186,31 @@ resource "aws_iam_role" "task_exe_role" {
 resource "aws_iam_role" "task_role" {
   name               = "${var.service_name}-task-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_policy.json
+}
+
+resource "aws_iam_role_policy" "task_role_policy" {
+  name = "PutApplicationLogToS3"
+  role = aws_iam_role.task_role.name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = "s3:PutObject"
+        Effect   = "Allow"
+        Resource = "arn:aws:s3:::${var.application-log-bucket}/*"
+      },
+      {
+        Action = [
+          "logs:CreateLogStream",
+          "logs:CreateLogGroup",
+          "logs:DescribeLogStreams",
+          "logs:PutLogEvents"
+        ]
+        Effect   = "Allow"
+        Resource = "${aws_cloudwatch_log_group.ecs_log_group.arn}:*"
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "task_exe_role_attachment" {

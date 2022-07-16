@@ -22,6 +22,10 @@ variable "github_repository_id" {
   default = "juv-shun/todo-api"
 }
 
+variable "application-log-bucket" {
+  default = "juv-shun.application-logs"
+}
+
 variable "access-log-bucket" {
   default = "juv-shun.lb-access-logs"
 }
