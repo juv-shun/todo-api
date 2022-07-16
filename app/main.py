@@ -1,7 +1,7 @@
 import logging
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 
 from .routers import router
 from .db import client as db
@@ -40,6 +40,25 @@ async def db_startup() -> None:
 async def db_shutdown() -> None:
     await db.close()
     logger.info("DB client successfully closed.")
+
+
+@app.middleware("http")
+async def error_handle(request: Request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as exc:
+        logger.exception(
+            exc,
+            extra={
+                "client_ip": getattr(request.client, "host"),
+                "user-agent": request.headers.get("user-agent"),
+                "path": request.url.path,
+                "method": request.method,
+                "query": request.url.query,
+                "body": (await request.body()).decode(),
+            }
+        )
+        raise
 
 
 @app.get("/heartbeat", include_in_schema=False)
