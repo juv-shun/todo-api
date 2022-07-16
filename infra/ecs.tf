@@ -13,20 +13,42 @@ resource "aws_ecr_lifecycle_policy" "ecr_lifecycle" {
   repository = aws_ecr_repository.ecr.name
 
   policy = jsonencode({
-    "rules" : [
+    rules = [
       {
-        "rulePriority" : 1,
-        "description" : "Delete old images",
-        "selection" : {
-          "tagStatus" : "any",
-          "countType" : "imageCountMoreThan",
-          "countNumber" : 30
-        },
-        "action" : {
-          "type" : "expire"
+        rulePriority = 1
+        description  = "Delete old images"
+        selection = {
+          tagStatus   = "untagged"
+          countType   = "imageCountMoreThan"
+          countNumber = 1
+        }
+        action = {
+          type = "expire"
         }
       }
-  ] })
+    ]
+  })
+}
+
+resource "aws_ecr_lifecycle_policy" "ecr_lifecycle-fluentbit" {
+  repository = aws_ecr_repository.ecr-fluentbit.name
+
+  policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1
+        description  = "Delete old images"
+        selection = {
+          tagStatus   = "untagged"
+          countType   = "imageCountMoreThan"
+          countNumber = 1
+        }
+        action = {
+          type = "expire"
+        }
+      }
+    ]
+  })
 }
 
 #####################################
