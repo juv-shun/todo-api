@@ -190,6 +190,11 @@ resource "aws_ecs_task_definition" "task_def" {
     }
   ])
 
+  # 変更が必要な場合のみ、以下のlifecycleをコメントアウトする。
+  lifecycle {
+    ignore_changes = [container_definitions]
+  }
+
   depends_on = [
     aws_cognito_user_pool.pool,
     aws_cognito_user_pool_client.client,
