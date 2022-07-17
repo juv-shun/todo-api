@@ -102,17 +102,15 @@ resource "aws_iam_role_policy" "codepipeline_service_role" {
   role = aws_iam_role.codepipeline_service_role.name
   policy = jsonencode(
     {
-      "Version" : "2012-10-17",
-      "Statement" : [
+      Version = "2012-10-17",
+      Statement = [
         {
-          "Action" : [
-            "iam:PassRole"
-          ],
-          "Resource" : "*",
-          "Effect" : "Allow",
-          "Condition" : {
-            "StringEqualsIfExists" : {
-              "iam:PassedToService" : [
+          Action = "iam:PassRole"
+          Resource = "*"
+          Effect = "Allow"
+          Condition = {
+            StringEqualsIfExists = {
+              "iam:PassedToService" = [
                 "cloudformation.amazonaws.com",
                 "elasticbeanstalk.amazonaws.com",
                 "ec2.amazonaws.com",
@@ -122,30 +120,30 @@ resource "aws_iam_role_policy" "codepipeline_service_role" {
           }
         },
         {
-          "Action" : [
+          Action = [
             "codecommit:CancelUploadArchive",
             "codecommit:GetBranch",
             "codecommit:GetCommit",
             "codecommit:GetUploadArchiveStatus",
             "codecommit:UploadArchive"
-          ],
-          "Resource" : "*",
-          "Effect" : "Allow"
+          ]
+          Resource = "*"
+          Effect = "Allow"
         },
         {
-          "Action" : [
+          Action = [
             "codedeploy:CreateDeployment",
             "codedeploy:GetApplication",
             "codedeploy:GetApplicationRevision",
             "codedeploy:GetDeployment",
             "codedeploy:GetDeploymentConfig",
             "codedeploy:RegisterApplicationRevision"
-          ],
-          "Resource" : "*",
-          "Effect" : "Allow"
+          ]
+          Resource = "*"
+          Effect = "Allow"
         },
         {
-          "Action" : [
+          Action = [
             "elasticbeanstalk:*",
             "ec2:*",
             "elasticloadbalancing:*",
@@ -158,20 +156,20 @@ resource "aws_iam_role_policy" "codepipeline_service_role" {
             "sqs:*",
             "ecs:*",
             "codestar-connections:*"
-          ],
-          "Resource" : "*",
-          "Effect" : "Allow"
+          ]
+          Resource = "*"
+          Effect = "Allow"
         },
         {
-          "Action" : [
+          Action = [
             "lambda:InvokeFunction",
             "lambda:ListFunctions"
           ],
-          "Resource" : "*",
-          "Effect" : "Allow"
+          Resource = "*",
+          Effect = "Allow"
         },
         {
-          "Action" : [
+          Action = [
             "opsworks:CreateDeployment",
             "opsworks:DescribeApps",
             "opsworks:DescribeCommands",
@@ -181,11 +179,11 @@ resource "aws_iam_role_policy" "codepipeline_service_role" {
             "opsworks:UpdateApp",
             "opsworks:UpdateStack"
           ],
-          "Resource" : "*",
-          "Effect" : "Allow"
+          Resource = "*"
+          Effect = "Allow"
         },
         {
-          "Action" : [
+          Action = [
             "cloudformation:CreateStack",
             "cloudformation:DeleteStack",
             "cloudformation:DescribeStacks",
@@ -197,20 +195,20 @@ resource "aws_iam_role_policy" "codepipeline_service_role" {
             "cloudformation:SetStackPolicy",
             "cloudformation:ValidateTemplate"
           ],
-          "Resource" : "*",
-          "Effect" : "Allow"
+          Resource = "*"
+          Effect = "Allow"
         },
         {
-          "Action" : [
+          Action = [
             "codebuild:BatchGetBuilds",
             "codebuild:StartBuild"
-          ],
-          "Resource" : "*",
-          "Effect" : "Allow"
+          ]
+          Resource = "*"
+          Effect = "Allow"
         },
         {
-          "Effect" : "Allow",
-          "Action" : [
+          Effect = "Allow"
+          Action = [
             "devicefarm:ListProjects",
             "devicefarm:ListDevicePools",
             "devicefarm:GetRun",
@@ -218,32 +216,28 @@ resource "aws_iam_role_policy" "codepipeline_service_role" {
             "devicefarm:CreateUpload",
             "devicefarm:ScheduleRun"
           ],
-          "Resource" : "*"
+          Resource = "*"
         },
         {
-          "Effect" : "Allow",
-          "Action" : [
+          Effect = "Allow"
+          Action = [
             "servicecatalog:ListProvisioningArtifacts",
             "servicecatalog:CreateProvisioningArtifact",
             "servicecatalog:DescribeProvisioningArtifact",
             "servicecatalog:DeleteProvisioningArtifact",
             "servicecatalog:UpdateProduct"
-          ],
-          "Resource" : "*"
+          ]
+          Resource = "*"
         },
         {
-          "Effect" : "Allow",
-          "Action" : [
-            "cloudformation:ValidateTemplate"
-          ],
-          "Resource" : "*"
+          Effect = "Allow"
+          Action = "cloudformation:ValidateTemplate"
+          Resource = "*"
         },
         {
-          "Effect" : "Allow",
-          "Action" : [
-            "ecr:DescribeImages"
-          ],
-          "Resource" : "*"
+          Effect = "Allow",
+          Action = "ecr:DescribeImages"
+          Resource = "*"
         }
       ]
     }

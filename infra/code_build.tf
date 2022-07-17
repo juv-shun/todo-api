@@ -65,42 +65,42 @@ resource "aws_iam_role_policy" "codebuild_service_role" {
   role = aws_iam_role.codebuild_service_role.name
   policy = jsonencode(
     {
-      "Version" : "2012-10-17",
-      "Statement" : [
+      Version = "2012-10-17"
+      Statement = [
         {
-          "Resource" : "*",
-          "Action" : "ecr:GetAuthorizationToken",
-          "Effect" : "Allow"
+          Resource = "*"
+          Action   = "ecr:GetAuthorizationToken"
+          Effect   = "Allow"
         },
         {
-          "Resource" : aws_ecr_repository.ecr.arn,
-          "Action" : ["ecr:*"],
-          "Effect" : "Allow"
+          Resource = aws_ecr_repository.ecr.arn
+          Action   = ["ecr:*"]
+          Effect   = "Allow"
         },
         {
-          "Resource" : aws_cloudwatch_log_group.code_build_log_group.arn,
-          "Action" : [
+          Resource = aws_cloudwatch_log_group.code_build_log_group.arn
+          Action = [
             "logs:CreateLogGroup",
             "logs:CreateLogStream",
             "logs:PutLogEvents"
-          ],
-          "Effect" : "Allow"
+          ]
+          Effect = "Allow"
         },
         {
-          "Resource" : ["${aws_s3_bucket.pipeline_artifact.arn}*"]
-          "Action" : [
+          Resource = ["${aws_s3_bucket.pipeline_artifact.arn}*"]
+          Action = [
             "s3:PutObject",
             "s3:GetObject",
             "s3:GetObjectVersion"
-          ],
-          "Effect" : "Allow"
+          ]
+          Effect = "Allow"
         },
         {
-          "Resource" : "*",
-          "Action" : [
+          Resource = "*"
+          Action = [
             "ecs:DescribeTaskDefinition"
-          ],
-          "Effect" : "Allow"
+          ]
+          Effect = "Allow"
         }
       ]
   })
