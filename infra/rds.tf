@@ -2,9 +2,9 @@ resource "aws_rds_cluster" "db_cluster" {
   cluster_identifier              = "${var.service_name}-cluster"
   engine                          = "aurora-postgresql"
   engine_version                  = "13.4"
-  master_username                 = "postgres"
-  master_password                 = "password"
-  database_name                   = "todo"
+  master_username                 = var.database_settings.master_username
+  master_password                 = var.database_settings.master_password
+  database_name                   = var.service_name
   vpc_security_group_ids          = [aws_default_security_group.default.id]
   db_subnet_group_name            = aws_db_subnet_group.subnet_group.id
   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.cluster_parameter_group.id

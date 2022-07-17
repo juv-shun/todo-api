@@ -62,7 +62,7 @@ resource "aws_codedeploy_deployment_group" "codedeploy_deployment_group" {
 # IAM
 #####################################
 resource "aws_iam_role" "code_deploy_service" {
-  name               = "code-deploy-service-${var.service_name}"
+  name               = "${var.service_name}-codedeploy-role"
   assume_role_policy = data.aws_iam_policy_document.code_deploy_service_assume.json
 }
 

@@ -14,7 +14,7 @@ resource "aws_alb" "load_balancer" {
 
   access_logs {
     bucket  = var.access-log-bucket
-    prefix  = "alb.${var.service_name}"
+    prefix  = var.service_name
     enabled = true
   }
 }

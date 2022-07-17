@@ -45,7 +45,7 @@ resource "aws_codebuild_project" "codebuild" {
 # IAM
 #####################################
 resource "aws_iam_role" "codebuild_service_role" {
-  name               = "${var.service_name}-codebuild-service-role"
+  name               = "${var.service_name}-codebuild-role"
   assume_role_policy = data.aws_iam_policy_document.codebuild_service_role_assume_policy.json
 }
 
