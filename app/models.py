@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 from typing import List, Optional
+
 from asyncpg.pool import PoolConnectionProxy
 
 
@@ -39,21 +41,13 @@ class ToDoTaskModel:
         return
 
     @classmethod
-    async def get(
-        cls, conn: PoolConnectionProxy, id: int, user: str
-    ) -> Optional[ToDoTaskModel]:
+    async def get(cls, conn: PoolConnectionProxy, id: int, user: str) -> Optional[ToDoTaskModel]:
         sql = "SELECT title, content FROM tasks WHERE id = $1 and username = $2"
         row = await conn.fetchrow(sql, id, user)
-        return (
-            ToDoTaskModel(id=id, title=row["title"], content=row["content"], user=user)
-            if row
-            else None
-        )
+        return ToDoTaskModel(id=id, title=row["title"], content=row["content"], user=user) if row else None
 
     @classmethod
-    async def search(
-        cls, conn: PoolConnectionProxy, q: str, user: str, offset: int, limit: int
-    ) -> List[ToDoTaskModel]:
+    async def search(cls, conn: PoolConnectionProxy, q: str, user: str, offset: int, limit: int) -> List[ToDoTaskModel]:
         sql = """
         SELECT id, title, content
         FROM tasks
@@ -61,9 +55,4 @@ class ToDoTaskModel:
         ORDER BY id DESC LIMIT $3 OFFSET $4
         """
         rows = await conn.fetch(sql, f"%{q}%", user, limit, offset)
-        return [
-            ToDoTaskModel(
-                id=row["id"], title=row["title"], content=row["content"], user=user
-            )
-            for row in rows
-        ]
+        return [ToDoTaskModel(id=row["id"], title=row["title"], content=row["content"], user=user) for row in rows]

@@ -1,14 +1,14 @@
 from typing import List
+
 from fastapi import APIRouter, Body, Depends, HTTPException, Path, Query
 from fastapi_cloudauth.cognito import CognitoClaims
-
 from starlette.requests import Request
 from starlette.responses import Response
 
 from .auth import get_current_user
 from .db import client as db_client
-from .schemas import TodoTaskIn, TodoTaskOut
 from .models import ToDoTaskModel
+from .schemas import TodoTaskIn, TodoTaskOut
 
 router = APIRouter()
 
@@ -133,9 +133,7 @@ async def search(
     response.headers["link"] = ""
     if len(tasks) > count:
         tasks = tasks[:-1]
-        response.headers[
-            "link"
-        ] += f'<{request.url}?q={q}&count={count}&page={page + 1}>; rel="next"'
+        response.headers["link"] += f'<{request.url}?q={q}&count={count}&page={page + 1}>; rel="next"'
 
     return [TodoTaskOut(id=t.id, title=t.title, content=t.content) for t in tasks]
 

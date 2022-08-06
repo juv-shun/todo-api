@@ -3,9 +3,9 @@ import os
 
 from fastapi import FastAPI, Request
 
-from .routers import router
-from .db import client as db
 from ._logger import init_logger
+from .db import client as db
+from .routers import router
 
 DB_HOST = os.environ["DB_HOST"]
 DB_USER = os.environ["DB_USER"]
@@ -56,7 +56,7 @@ async def error_handle(request: Request, call_next):
                 "method": request.method,
                 "query": request.url.query,
                 "body": (await request.body()).decode(),
-            }
+            },
         )
         raise
 

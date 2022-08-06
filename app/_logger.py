@@ -1,4 +1,5 @@
 import logging
+
 import arrow
 from pythonjsonlogger import jsonlogger
 
@@ -15,11 +16,7 @@ class JsonFormatter(jsonlogger.JsonFormatter):
     def add_fields(self, log_record, record, message_dict):
         super().add_fields(log_record, record, message_dict)
         if not log_record.get("time"):
-            now = (
-                arrow.now().to("Asia/Tokyo")
-                .replace(microsecond=0)
-                .isoformat()
-            )
+            now = arrow.now().to("Asia/Tokyo").replace(microsecond=0).isoformat()
             log_record["time"] = now
         if log_record.get("level"):
             log_record["level"] = log_record["level"].upper()
