@@ -14,7 +14,7 @@ arrow = "^1.2.2"
 python-json-logger = "^2.0.4"
 
 [tool.poetry.dev-dependencies]
-flake8 = "^4.0.1"
+flake8 = "^5.0.4"
 mypy = "^0.910"
 pytest = "^6.2.5"
 pytest-asyncio = "^0.16.0"
